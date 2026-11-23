@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: retail-config
+  namespace: retail-evolve
+data:
+  REDIS_URL: redis://redis:6379/0
+  TAU2_DATA_DIR: /app/vendor/tau2/data
+  AGENT_MODEL: gpt-6-luna
+  USER_MODEL: gpt-6-luna
+  LEARNING_MODEL: gpt-6-luna
+  INITIALIZE_DATABASE: '0'
+  CODEX_GATEWAY_URL: http://127.0.0.1:8770/v1
+  JOB_LEASE_SECONDS: '180'

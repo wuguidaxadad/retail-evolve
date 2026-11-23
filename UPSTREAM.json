@@ -1,0 +1,14 @@
+{
+  "ace": {
+    "repository": "https://github.com/kayba-ai/agentic-context-engine",
+    "commit": "3a319831785ede6ba4a3a4002756233095c59e17"
+  },
+  "tau2": {
+    "repository": "https://github.com/sierra-research/tau2-bench",
+    "commit": "73dc24445d28762075e69465d966aee4a9dcbfcb"
+  },
+  "auto-harness": {
+    "repository": "https://github.com/neosigmaai/auto-harness",
+    "commit": "52360dbbeb8cea8886d90778e634a145c51da735"
+  }
+}

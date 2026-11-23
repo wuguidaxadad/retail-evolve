@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Retail Evolve · 零售售后智能工作台</title>
+<link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+<aside><div class="brand"><span class="logo">R</span><b>Retail Evolve</b></div>
+<p class="tag">零售售后智能工作台</p>
+<nav>
+<button data-page="overview" class="selected">业务工作台</button>
+<button data-page="support">统一售后客服</button>
+<button data-page="orders">客户与订单</button>
+<button data-page="tickets">售后工单</button>
+<button data-page="knowledge">业务知识库</button>
+<button data-page="chat">隔离客服演示</button>
+<button data-page="experiments">自进化实验室</button>
+<button data-page="versions">技能与版本</button>
+<button data-page="operations">运行状态</button>
+</nav><div class="aside-foot">τ 公开零售数据<br>ACE + Auto-harness</div></aside>
+<main>
+<header><span id="breadcrumb">业务工作台</span><div class="row"><span id="current-model" class="small"></span><span id="connection" class="pill">连接中</span></div></header>
+<section id="overview" class="page">
+<div class="eyebrow">CUSTOMER SERVICE / CONTINUOUS LEARNING</div>
+<h1>售后有闭环，改进有证据。</h1>
+<p class="intro">从订单查询、取消到退换货，让 Agent 完成业务；用代码与技能两条独立改进路径，验证服务能力。</p>
+<div id="stats" class="stats"></div>
+<div class="row section-heading"><h2>从一个真实业务问题开始</h2><span class="small">公开模拟数据 · 独立售后业务库</span></div>
+<div id="business-cases" class="case-grid"></div>
+<div class="grid-two"><article class="card"><span class="eyebrow">01 / AGENT EVOLUTION</span><h2>让执行逻辑变得更可靠</h2><p>从训练轨迹定位失误，修改 Agent 的状态、工具处理和提示词，经过回归与门禁决定是否保留。</p><button onclick="navigate('experiments')">查看代码进化记录 →</button></article>
+<article class="card"><span class="eyebrow">02 / SKILL EVOLUTION</span><h2>把服务经验沉淀为技能</h2><p>反思成功与失败的对话，更新可复用的业务技能；下一次服务时注入技能，指导执行。</p><button onclick="navigate('versions')">查看技能与版本 →</button></article></div>
+<article class="card"><h2>同一起点，独立比较</h2><p class="muted">基线、仅 Agent 代码改进、仅 Skill 改进各跑同一组任务。学习与最终测试分开，成绩以完整评测为准。</p><div id="split-stats"></div></article>
+<article class="card"><h2>最近任务</h2><div id="recent-jobs"></div></article>
+</section>
+<section id="support" class="page hidden">
+<div class="eyebrow">CUSTOMER SUPPORT</div><h1>多件售后，在同一个对话里处理。</h1>
+<p class="intro">使用公开模拟订单。可以在一条消息里查询物流、申请退换货，也可以继续补充或修改要求。</p>
+<article class="card"><form id="support-start" class="row">
+<input name="customer_id" placeholder="输入演示客户 ID" aria-label="演示客户 ID" maxlength="80" required><button>开启会话</button><span id="support-identity" class="small"></span>
+</form>
+<div id="support-messages" class="messages"></div>
+<p id="support-clarifying" class="small hidden">正在补充选中的消息。<button id="support-cancel-clarify" type="button">取消补充</button></p>
+<form id="support-send" class="chat-input hidden"><textarea name="message" rows="3" maxlength="4000" placeholder="例如：帮我查一下外套发货没，昨天收到的鞋想换大一码" aria-label="消息" required></textarea><button class="primary">发送</button></form></article>
+<div id="support-tasks" class="grid-two"></div>
+</section>
+<section id="orders" class="page hidden">
+<div class="eyebrow">CUSTOMERS / ORDERS / INVENTORY</div><h1>从订单开始处理售后。</h1><p class="intro">产品业务数据独立持久化。这里的操作不会改动公开评测数据或实验结果。</p>
+<article class="card"><form id="record-search" class="row"><select id="record-kind"><option value="orders">订单</option><option value="users">客户</option><option value="products">商品与库存</option></select><input id="record-query" placeholder="订单号、客户 ID、商品名称" aria-label="搜索业务数据"><select id="record-status" aria-label="订单状态"><option value="">全部状态</option><option value="pending">待处理</option><option value="delivered">已送达</option><option value="cancelled">已取消</option><option value="return requested">已申请退货</option></select><button class="primary">搜索</button></form><div class="row service-version-controls"><label>工单 Agent 版本 <select id="service-version"><option value="">当前服务版本</option></select></label><label>运行模式 <select id="service-mode"><option value="combined">代码 + 技能</option><option value="baseline">原始 Agent</option><option value="harness">仅代码改进</option><option value="skills">仅 Skill</option></select></label></div><div id="record-list"></div><div class="row"><button id="record-prev">上一页</button><span id="record-count" class="small"></span><button id="record-next">下一页</button></div></article>
+</section>
+<section id="tickets" class="page hidden">
+<div class="eyebrow">SERVICE OPERATIONS</div><h1>Agent 处理，人工有据可接。</h1><p class="intro">主 Agent 协调 → 订单核验与政策检索 → 方案生成与风险审核 → 人工确认 → 执行与审计。支持取消、退货、换规格与改地址；政策例外、物流与支付争议转人工。</p>
+<div id="service-stats" class="stats"></div><div class="ticket-layout"><article class="card ticket-sidebar"><div class="row"><h2>售后工单</h2><button onclick="navigate('orders')">新建</button></div><select id="ticket-filter" aria-label="工单状态"><option value="">全部工单</option><option value="open">处理中</option><option value="waiting_confirmation">待确认</option><option value="human">人工接管</option><option value="resolved">已解决</option><option value="closed">已关闭</option></select><div id="ticket-list"></div></article><div id="ticket-detail"><article class="card"><h2>选择一张工单</h2><p class="muted">在客户与订单中选择订单，创建售后工单。Agent 只能操作工单绑定的订单。</p></article></div></div>
+</section>
+<section id="knowledge" class="page hidden"><div class="eyebrow">GOVERNED KNOWLEDGE</div><h1>业务知识有来源，也有版本。</h1><p class="intro">人工维护业务政策，发布后供 Agent 结合关键词和语义检索，并按相关性排序。ACE Skill 是从轨迹提炼的执行经验，与业务知识分别管理。</p>
+<div class="grid-two"><article class="card"><div class="row"><h2>业务知识</h2><button id="new-article">新建</button></div><div id="knowledge-list"></div></article><article class="card"><h2>编辑与发布</h2><form id="knowledge-form" class="fields"><input name="title" placeholder="文档标题" required maxlength="160" aria-label="文档标题"><input name="tags" placeholder="关键词，如：退货 return 退款" maxlength="240" aria-label="关键词"><input name="order_states" placeholder="适用订单状态，逗号分隔，留空表示全部" aria-label="适用订单状态"><input name="product_ids" placeholder="适用商品 ID，逗号分隔，留空表示全部" aria-label="适用商品"><textarea name="content" rows="12" required maxlength="6000" placeholder="可核对的业务规则、适用条件和例外处理" aria-label="知识内容"></textarea><label>状态<select name="status"><option value="draft">草稿 · 不参与检索</option><option value="published">已发布 · 允许检索</option><option value="archived">归档 · 不参与检索</option></select></label><button class="primary">保存文档</button><p id="knowledge-edit-state" class="small">新建文档</p></form></article></div><article class="card"><h2>检索试用</h2><form id="knowledge-search-form" class="fields"><input id="knowledge-query" required placeholder="例如：已收到的商品怎样换规格？" aria-label="政策问题"><input id="knowledge-order" placeholder="订单号（可选，用于匹配适用条件）" aria-label="检索订单号"><button>查找政策依据</button></form><div id="knowledge-results"></div></article></section>
+<section id="chat" class="page hidden">
+<div class="eyebrow">RETAIL ASSISTANT</div><h1>订单问题，交给客服。</h1>
+<p class="intro">每个会话有独立的订单副本，支持连续对话和工具操作。当前版本在新会话创建时固定。</p>
+<div class="grid-chat"><article class="card">
+<div class="row"><h2>客服会话</h2><button id="new-chat">新建会话</button></div>
+<div id="chat-version" class="muted"></div><div id="messages" class="messages"><p class="muted">新建会话后，输入你的订单问题。</p></div>
+<form id="chat-form" class="chat-input"><textarea id="chat-text" rows="3" placeholder="例如：查询订单当前状态"></textarea><button class="primary" id="chat-send">发送</button></form>
+</article><article class="card"><h2>选择售后案例</h2><p>选案例、新建会话，再发送问题。需要更改订单时，由你确认后执行。</p>
+<div id="examples"></div><p class="muted">数据使用英文规则，英文提问更接近公开基准。客服支持中文提问。</p>
+<div id="order-panel"></div><h3>操作记录</h3><div id="tool-log" class="tool-log">工具调用会显示在这里。</div></article></div>
+</section>
+<section id="experiments" class="page hidden">
+<div class="eyebrow">LEARN / COMPARE / VERIFY</div><h1>改进需要证据。</h1>
+<p class="intro">代码自进化与技能自进化从同一个无经验 Agent 出发，分别验证。这里展示实际记录，不预设提升。</p>
+<article class="card"><div class="row"><h2>三组正式对照</h2><span class="pill">每题一次</span></div><div id="comparison"></div></article>
+<div class="grid-two"><article class="card"><h2>Agent 代码自进化</h2><p class="muted">训练执行 → 失败分析 → 代码候选 → 回归与门禁 → 保留或回退。允许修改完整 Agent，不修改业务工具和评分规则。</p><div id="rsi-history"></div></article>
+<article class="card"><h2>Skill 自进化</h2><p class="muted">同一基线的完整训练轨迹 → 递归反思 → SkillManager 更新 → 持久化 Skillbook → 服务时注入。</p><div id="ace-summary"></div><div id="skill-preview"></div></article></div>
+<details class="card"><summary>手动发起新的代码自进化任务</summary><p class="muted">会调用真实模型产生费用；与当前最终评测分开管理。</p><form id="rsi-form" class="fields"><label>原生基线版本<select name="version_id" class="version-select"></select></label><button class="primary">启动新一轮 RSI 学习</button></form></details>
+<div class="grid-two"><article class="card"><h2>① 执行业务评测</h2>
+<form id="eval-form" class="fields">
+<label>版本<select name="version_id" class="version-select"></select></label>
+<label>实验模式<select name="mode"><option value="baseline">原始 Agent</option><option value="skills">仅 Skill</option><option value="harness">仅 RSI</option></select></label>
+<label>任务分组<select name="split"><option value="learn">学习集</option><option value="validation">门禁集</option><option value="final">最终测试集</option></select></label>
+<div class="row"><label>任务数<input name="limit" type="number" value="1" min="1" max="12"></label><label>每题执行次数<input name="trials" type="number" value="1" min="1" max="1"></label></div>
+<button class="primary">提交评测</button></form>
+</article><article class="card"><h2>② 学习经验 / 优化策略</h2>
+<form id="learn-form" class="fields">
+<label>已完成的学习集评测<select name="source_job_id" id="learning-source"></select></label>
+<label>改进方式<select name="kind"><option value="learn">ACE：提炼业务经验</option></select></label>
+<p class="muted">从已完成的训练集会话中学习 Skill。RSI 使用上方的完整优化循环。</p><button class="primary">生成候选版本</button></form>
+<h2 class="space">③ 检查候选</h2><form id="gate-form" class="fields"><label>候选版本<select name="version_id" id="candidate-select"></select></label><label>每组任务数<input name="limit" value="1" type="number" min="1" max="12"></label><button>执行回归检查</button></form>
+</article></div>
+<article class="card"><h2>执行进度与结果</h2><div id="experiment-jobs"></div></article>
+<article id="trace-card" class="card hidden"><div class="row"><h2>任务轨迹</h2><button onclick="document.getElementById('trace-card').classList.add('hidden')">收起</button></div><div id="trace-data"></div></article>
+</section>
+<section id="versions" class="page hidden">
+<div class="eyebrow">VERSIONED EXPERIENCE</div><h1>能解释，也能回退。</h1>
+<p class="intro">查看经验内容、来源轨迹、策略代码和检查结论。发布时一起切换经验与执行策略。</p>
+<label class="version-filter">版本范围 <select id="version-scope"><option value="current">当前实验与服务版本</option><option value="all">最近 60 个历史版本</option></select></label><div id="version-list"></div>
+</section>
+<section id="operations" class="page hidden">
+<div class="eyebrow">SYSTEM STATUS</div><h1>任务可靠地走完每一步。</h1>
+<div id="ops-stats" class="stats"></div>
+<div class="grid-two"><article class="card"><h2>任务交付机制</h2><p>任务和待发送事件先一起保存至 MySQL，再进入 Redis Streams 队列。服务恢复后，未确认任务可重新执行。</p><p class="muted">重复消息由数据库租约和幂等键控制；会话更新与任务完成一起提交。失败任务有限重试，超限进入死信队列。</p></article><article class="card"><h2>发布历史</h2><div id="releases"></div></article></div>
+<article class="card"><h2>运行说明</h2><p>本地演示使用独立的 MySQL 和 Redis 实例。消息队列使用 Redis Streams。模型密钥只保存在本地配置中。</p><a href="/docs" target="_blank">查看后端接口</a></article>
+</section>
+</main><div id="toast" role="status" class="toast hidden"></div>
+<script src="/assets/app.js"></script>
+<script src="/assets/service.js"></script>
+<script src="/assets/support.js"></script>
+</body></html>

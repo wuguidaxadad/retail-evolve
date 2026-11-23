@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker
+  namespace: retail-evolve
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      terminationGracePeriodSeconds: 180
+      initContainers:
+      - name: state-dirs
+        image: retail-evolve:local
+        imagePullPolicy: IfNotPresent
+        command:
+        - python
+        - -c
+        - from pathlib import Path; [Path('/state',p).mkdir(exist_ok=True) for p in
+          ['.runtime','artifacts','docs']]
+        volumeMounts:
+        - name: state
+          mountPath: /state
+      containers:
+      - name: worker
+        image: retail-evolve:local
+        imagePullPolicy: IfNotPresent
+        command:
+        - python
+        - scripts/container_worker.py
+        envFrom: &id001
+        - configMapRef:
+            name: retail-config
+        - secretRef:
+            name: retail-secrets
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: '2'
+            memory: 4Gi
+        volumeMounts:
+        - &id002
+          name: state
+          mountPath: /app/.runtime
+          subPath: .runtime
+        - name: state
+          mountPath: /app/artifacts
+          subPath: artifacts
+        - name: state
+          mountPath: /app/docs
+          subPath: docs
+      - name: gateway
+        image: retail-evolve:local
+        imagePullPolicy: IfNotPresent
+        command:
+        - python
+        - -m
+        - uvicorn
+        - app.codex_gateway:app
+        - --host
+        - 127.0.0.1
+        - --port
+        - '8770'
+        envFrom: *id001
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        volumeMounts:
+        - *id002
+        readinessProbe:
+          exec:
+            command:
+            - python
+            - -c
+            - import urllib.request; urllib.request.urlopen('http://127.0.0.1:8770/health',
+              timeout=3)
+          periodSeconds: 5
+      volumes:
+      - name: state
+        persistentVolumeClaim:
+          claimName: worker-state

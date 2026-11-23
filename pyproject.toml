@@ -1,0 +1,11 @@
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore:'audioop' is deprecated:DeprecationWarning"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+exclude = ["vendor", ".venv", ".runtime", "artifacts"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]

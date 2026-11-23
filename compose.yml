@@ -1,0 +1,69 @@
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_DATABASE: retail_evolve
+      MYSQL_USER: retail
+      MYSQL_PASSWORD: retail_local
+      MYSQL_ROOT_PASSWORD: root_local
+    volumes: [mysql-data:/var/lib/mysql]
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot_local"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+  redis:
+    image: redis:7.4
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes: [redis-data:/data]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  api:
+    build: .
+    env_file: .env
+    environment:
+      MYSQL_URL: mysql+pymysql://retail:retail_local@mysql:3306/retail_evolve?charset=utf8mb4
+      REDIS_URL: redis://redis:6379/0
+      TAU2_DATA_DIR: /app/vendor/tau2/data
+    depends_on:
+      mysql: {condition: service_healthy}
+      redis: {condition: service_healthy}
+    ports: ["127.0.0.1:8765:8765"]
+    volumes: [artifacts:/app/artifacts]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8765/api/ready')"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+  worker:
+    build: .
+    command: ["python", "scripts/container_worker.py"]
+    env_file: .env
+    environment:
+      MYSQL_URL: mysql+pymysql://retail:retail_local@mysql:3306/retail_evolve?charset=utf8mb4
+      REDIS_URL: redis://redis:6379/0
+      CODEX_GATEWAY_URL: http://gateway:8770/v1
+      TAU2_DATA_DIR: /app/vendor/tau2/data
+    depends_on:
+      gateway: {condition: service_healthy}
+      api: {condition: service_healthy}
+    volumes: [artifacts:/app/artifacts, runtime:/app/.runtime, reports:/app/docs]
+  gateway:
+    build: .
+    command: ["python", "-m", "uvicorn", "app.codex_gateway:app", "--host", "0.0.0.0", "--port", "8770"]
+    env_file: .env
+    volumes: [runtime:/app/.runtime]
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8770/health')"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+volumes:
+  mysql-data:
+  redis-data:
+  artifacts:
+  runtime:
+  reports:
