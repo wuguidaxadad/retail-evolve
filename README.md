@@ -10,8 +10,6 @@
 ![Redis Streams](https://img.shields.io/badge/Redis_Streams-Queue-DC382D)
 ![MIT](https://img.shields.io/badge/License-MIT-28614D)
 
-<img src="docs/images/workspace.png" alt="Retail Evolve 售后工作台，展示待处理工单、待确认方案和人工接管状态" width="740">
-
 ## 一次售后是怎么办完的
 
 > 客户说「鞋子换成 42 码，耳机我想退掉」，看到方案后又说「鞋子还是换 43 码」。
@@ -42,19 +40,6 @@ flowchart LR
 | **售后政策检索与溯源** | 按订单状态、商品及发布版本过滤条款，使用 BM25 和向量双路召回，经 RRF 融合与重排。返回条款来源，并在提交方案前复核引用。 |
 | **审批、幂等与异常恢复** | 方案与订单变更分阶段处理。确认接口校验工单与订单版本，事务内保留审计记录。后台执行通过持久化状态和租约恢复中断任务。 |
 | **轨迹驱动的离线改进** | **Harness Self-Improvement** 从失败轨迹生成候选补丁，经回归评测筛选版本。**Skill Self-Improvement** 从执行轨迹提炼策略，维护可按任务检索的版本化技能库。 |
-
-<details>
-<summary>查看方案确认和知识库页面</summary>
-
-<table>
-<tr><th>售后工单与方案确认</th><th>政策维护与检索</th></tr>
-<tr>
-<td valign="top"><img src="docs/images/approval.png" alt="取消订单的待确认方案、人工接管和执行审计" width="360"></td>
-<td valign="top"><img src="docs/images/knowledge.png" alt="政策编辑发布和条款检索页面" width="360"></td>
-</tr>
-</table>
-
-</details>
 
 ## 本地运行
 
